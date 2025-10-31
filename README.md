@@ -4,11 +4,11 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 
 ## Project Status
 
-**Current Milestone**: Motor System MVP (Milestone 1) ✓ Complete
+**Current Milestone**: Vision System MVP (Milestone 2) ✓ Complete
 
 ### Completed Components
 
-- ✅ **Motor System** - Drawing Control Layer
+- ✅ **Motor System** - Drawing Control Layer (31 tests)
   - Unified API for drawing operations
   - Krita backend adapter
   - Simulation backend (PIL/Pillow)
@@ -17,9 +17,17 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
   - Layer and tool management
   - Undo/redo functionality
 
+- ✅ **Vision System** - Canvas Analysis Engine (32 tests)
+  - Pose detection using MediaPipe
+  - Face and hand landmark detection
+  - Canvas state analysis
+  - Reference comparison
+  - Pose error detection
+  - Proportion and symmetry analysis
+  - Edge alignment metrics
+
 ### Roadmap
 
-- 🔄 **Vision System** - Canvas analysis and feedback (Milestone 2)
 - 🔄 **Brain System** - Planning and decision engine (Milestone 3)
 - 🔄 **Style AI** - Style suggestion and reference (Milestone 4)
 - 🔄 **Integration** - Full system integration (Milestone 5)
@@ -85,9 +93,80 @@ pytest tests/
 ### Documentation
 
 - [Motor System Documentation](docs/MOTOR_SYSTEM.md) - Complete API reference and guide
+- [Vision System Documentation](docs/VISION_SYSTEM.md) - Canvas analysis and perception
 - [Examples](examples/) - Usage examples
   - `basic_usage.py` - Simple drawing operations
   - `advanced_usage.py` - Advanced features demonstration
+
+## Vision System
+
+The Vision System provides perception capabilities for analyzing canvas state, detecting poses and anatomy, and comparing to reference images.
+
+### Features
+
+- **Pose Detection**: MediaPipe-based body pose estimation (33 keypoints)
+- **Face Detection**: 468 facial landmarks for detailed analysis
+- **Hand Detection**: 21 landmarks per hand, multi-hand support
+- **Canvas Analysis**: Silhouette extraction, edge detection
+- **Comparison Metrics**: Pose differences, proportions, symmetry, alignment
+- **Error Detection**: Automatic identification of pose and anatomy issues
+- **Refinement Guidance**: Highlighting specific areas needing improvement
+
+### Quick Start
+
+```python
+from vision import VisionModule
+
+# Initialize vision module
+vision = VisionModule()
+
+# Analyze canvas state
+result = vision.analyze("canvas.png")
+
+if result.has_pose():
+    print(f"Detected {len(result.pose.keypoints)} keypoints")
+    print(f"Proportion score: {result.proportion_metrics.overall_score:.2f}")
+
+# Compare to reference
+comparison = vision.compare_to("canvas.png", "reference.png")
+print(f"Similarity: {comparison.overall_similarity:.1%}")
+
+# Get pose errors
+errors = vision.detect_pose_errors("canvas.png", "reference.png")
+for error in errors:
+    print(f"- {error}")
+
+# Get areas to refine
+areas = vision.highlight_areas_needing_refinement("canvas.png", "reference.png")
+for area in areas:
+    print(f"Fix {area['type']} at region {area['region']}")
+
+vision.close()
+```
+
+### Integration with Motor System
+
+```python
+from motor import MotorInterface
+from vision import VisionModule
+
+# Create systems
+motor = MotorInterface(backend="simulation")
+vision = VisionModule()
+
+# Draw on canvas
+motor.create_canvas(800, 600)
+# ... draw strokes ...
+motor.save("canvas.png")
+
+# Analyze and compare
+result = vision.analyze("canvas.png")
+comparison = vision.compare_to("canvas.png", "reference.png")
+
+# Use analysis to guide refinement
+areas = vision.highlight_areas_needing_refinement("canvas.png", "reference.png")
+# ... adjust drawing based on feedback ...
+```
 
 ## Architecture
 
@@ -119,7 +198,7 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 ### Component Roles
 
 - **Motor System**: Executes drawing commands (strokes, tool changes, etc.)
-- **Vision System** (Planned): Analyzes canvas state, detects structure, symmetry, anatomy
+- **Vision System**: Analyzes canvas state, detects poses, compares to references
 - **Brain System** (Planned): Makes decisions, plans corrections, schedules refinements
 - **Style AI** (Planned): Provides style suggestions and reference imagery
 
@@ -141,20 +220,31 @@ Artist/
 ├── motor/                  # Motor system (drawing control)
 │   ├── core/              # Core classes (interface, stroke, tool, canvas)
 │   ├── backends/          # Backend adapters (Krita, simulation)
-│   └── utils/             # Utilities (path processing, emulation)
-├── vision/                # Vision system (planned)
-├── brain/                 # Brain system (planned)
-├── style_ai/              # Style AI system (planned)
-├── examples/              # Usage examples
-├── tests/                 # Unit tests
-├── docs/                  # Documentation
-└── README.md              # This file
+│   ├── utils/             # Utilities (path processing, emulation)
+│   └── config.py          # Configuration
+├── vision/                # Vision system (canvas analysis)
+│   ├── core/             # Core components (detectors, comparator)
+│   ├── models/           # Data structures (poses, landmarks, metrics)
+│   ├── utils/            # Utilities (image, geometry, visualization)
+│   └── vision_module.py  # Main API
+├── tests/
+│   ├── motor/            # Motor system tests (31 tests)
+│   └── vision/           # Vision system tests (32 tests)
+├── examples/             # Usage examples
+├── docs/                 # Documentation
+│   ├── MOTOR_SYSTEM.md
+│   └── VISION_SYSTEM.md
+├── requirements.txt
+└── setup.py
 ```
 
 ## Requirements
 
 - Python 3.12+
 - Pillow 10.0+ (for simulation backend)
+- OpenCV 4.8+ (for vision system)
+- MediaPipe 0.10+ (for pose/landmark detection)
+- NumPy 1.24+ (for numerical operations)
 - Krita 5.0+ (optional, for Krita backend)
 
 ## Development
