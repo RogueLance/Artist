@@ -18,8 +18,9 @@ class DisplayFormatter:
     def format_header(text: str, width: int = 70, char: str = "=") -> str:
         """Format a header with border."""
         border = char * width
-        padding = (width - len(text) - 2) // 2
-        return f"{border}\n{' ' * padding} {text}\n{border}"
+        padding_left = (width - len(text) - 2) // 2
+        padding_right = width - len(text) - 2 - padding_left
+        return f"{border}\n{' ' * padding_left} {text}{' ' * padding_right}\n{border}"
     
     @staticmethod
     def format_section(title: str, width: int = 70) -> str:

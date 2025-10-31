@@ -136,7 +136,19 @@ class Session:
         with open(path, 'r') as f:
             data = json.load(f)
         
-        config = SessionConfig(**{k: v for k, v in data['config'].items() if k in SessionConfig.__annotations__})
+        # Reconstruct SessionConfig, handling Path conversion
+        config_data = data['config'].copy()
+        if config_data.get('log_file'):
+            config_data['log_file'] = Path(config_data['log_file'])
+        if config_data.get('output_dir'):
+            config_data['output_dir'] = Path(config_data['output_dir'])
+        
+        try:
+            config = SessionConfig(**config_data)
+        except TypeError:
+            # Fallback: filter to known attributes
+            config = SessionConfig(**{k: v for k, v in config_data.items() if k in SessionConfig.__annotations__})
+        
         session = cls(
             session_id=data['session_id'],
             config=config,

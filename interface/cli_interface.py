@@ -9,8 +9,6 @@ and control iterations.
 import uuid
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Union
-import numpy as np
-from PIL import Image
 
 from interface.models.session import Session, SessionConfig
 from interface.models.user_input import UserInput, InputType, UserDecision
