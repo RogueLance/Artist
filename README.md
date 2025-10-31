@@ -237,16 +237,6 @@ Artist/
 ├── requirements.txt
 └── setup.py
 ```
-│   ├── backends/          # Backend adapters (Krita, simulation)
-│   └── utils/             # Utilities (path processing, emulation)
-├── vision/                # Vision system (planned)
-├── brain/                 # Brain system (planned)
-├── style_ai/              # Style AI system (planned)
-├── examples/              # Usage examples
-├── tests/                 # Unit tests
-├── docs/                  # Documentation
-└── README.md              # This file
-```
 
 ## Requirements
 
