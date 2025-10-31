@@ -4,7 +4,7 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 
 ## Project Status
 
-**Current Milestone**: Brain System MVP (Milestone 3) ✓ Complete
+**Current Milestone**: Artistic Workflow Pipeline (Milestone 5) ✓ Complete
 
 ### Completed Components
 
@@ -35,10 +35,19 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
   - Iterative refinement workflow
   - State tracking and history
 
+- ✅ **Workflow System** - Artistic Workflow Pipeline (79 tests)
+  - Phase-based workflow (sketch → refinement → stylization → rendering)
+  - Stroke intent classification
+  - Canvas checkpointing and rollback
+  - Decision logging and replay
+  - Workflow state management
+  - Evaluation-based phase transitions
+  - Integration with Motor, Vision, and Brain systems
+
 ### Roadmap
 
 - 🔄 **Style AI** - Style suggestion and reference (Milestone 4)
-- 🔄 **Integration** - Full system integration (Milestone 5)
+- 🔄 **Full Integration** - Complete end-to-end system (Milestone 6)
 
 ## Motor System
 
@@ -207,6 +216,59 @@ vision.close()
 motor.close()
 ```
 
+## Workflow System
+
+The Workflow System implements a complete artistic workflow pipeline that simulates the iterative creative process from rough sketch to refined artwork.
+
+### Features
+
+- **Drawing Phases**: Progression through sketch, refinement, stylization, and rendering
+- **Stroke Classification**: Intent-based stroke categorization (gesture, contour, detail, etc.)
+- **Checkpointing**: Save and restore canvas state at any point
+- **Rollback**: Revert to previous checkpoints or phases
+- **Decision Logging**: Complete audit trail of all strokes and decisions
+- **Phase Transitions**: Validated transitions with forward progression and regression
+- **Evaluation-Driven**: Automatic phase transition suggestions based on quality metrics
+
+### Quick Start
+
+```python
+from motor.core.canvas import Canvas
+from motor.core.stroke import Stroke, StrokePoint
+from workflow.core.workflow_executor import WorkflowExecutor
+from workflow.models.drawing_phase import DrawingPhase
+from workflow.models.stroke_intent import StrokeIntent
+
+# Create workflow
+canvas = Canvas(width=800, height=600)
+executor = WorkflowExecutor(canvas)
+
+# Execute strokes with intent
+stroke = Stroke(points=[StrokePoint(10, 10), StrokePoint(20, 20)])
+executor.execute_stroke(
+    stroke,
+    intent=StrokeIntent.GESTURE,
+    purpose="Initial gesture for proportions"
+)
+
+# Transition to next phase
+executor.transition_to_phase(
+    DrawingPhase.REFINEMENT,
+    reason="Proportions established"
+)
+
+# Create checkpoint
+checkpoint_id = executor.create_checkpoint("After sketch phase")
+
+# Rollback if needed
+executor.rollback_to_checkpoint(checkpoint_id)
+
+# Get workflow summary
+summary = executor.get_workflow_summary()
+print(f"Total strokes: {summary['total_strokes']}")
+print(f"Current phase: {summary['workflow_state']['current_phase']}")
+```
+
 ### Integration with Motor System
 
 ```python
@@ -294,15 +356,21 @@ Artist/
 │   ├── core/             # Core components (planner, task manager, state tracker)
 │   ├── models/           # Data structures (tasks, action plans, state)
 │   └── brain_module.py   # Main API
+├── workflow/              # Workflow system (artistic pipeline)
+│   ├── core/             # Core components (executor, checkpoints, logging)
+│   ├── models/           # Data structures (phases, intents, state)
+│   └── __init__.py       # Main API
 ├── tests/
 │   ├── motor/            # Motor system tests (31 tests)
 │   ├── vision/           # Vision system tests (32 tests)
-│   └── brain/            # Brain system tests (33 tests)
+│   ├── brain/            # Brain system tests (33 tests)
+│   └── workflow/         # Workflow system tests (79 tests)
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
 │   ├── MOTOR_SYSTEM.md
 │   ├── VISION_SYSTEM.md
 │   └── BRAIN_SYSTEM.md
+├── MILESTONE_5_COMPLETE.md  # Workflow pipeline documentation
 ├── requirements.txt
 └── setup.py
 ```
