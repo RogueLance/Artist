@@ -4,7 +4,7 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 
 ## Project Status
 
-**Current Milestone**: Vision System MVP (Milestone 2) ✓ Complete
+**Current Milestone**: Brain System MVP (Milestone 3) ✓ Complete
 
 ### Completed Components
 
@@ -26,9 +26,17 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
   - Proportion and symmetry analysis
   - Edge alignment metrics
 
+- ✅ **Brain System** - Planning and Decision Making (33 tests)
+  - Task management and prioritization
+  - Vision feedback interpretation
+  - Action plan generation
+  - Result evaluation and retry logic
+  - Motor System integration
+  - Iterative refinement workflow
+  - State tracking and history
+
 ### Roadmap
 
-- 🔄 **Brain System** - Planning and decision engine (Milestone 3)
 - 🔄 **Style AI** - Style suggestion and reference (Milestone 4)
 - 🔄 **Integration** - Full system integration (Milestone 5)
 
@@ -144,6 +152,61 @@ for area in areas:
 vision.close()
 ```
 
+## Brain System
+
+The Brain System provides the central decision-making capabilities for planning and executing artistic corrections based on vision feedback.
+
+### Features
+
+- **Task Management**: Create, prioritize, and track tasks
+- **Vision Interpretation**: Translate vision feedback into actionable plans
+- **Action Planning**: Generate concrete drawing actions for tasks
+- **Result Evaluation**: Assess execution success and schedule retries
+- **Motor Integration**: Delegate drawing actions to Motor System
+- **Iterative Refinement**: Support multi-iteration improvement cycles
+- **State Tracking**: Maintain goals, context, and execution history
+
+### Quick Start
+
+```python
+from brain import BrainModule
+from vision import VisionModule
+from motor import MotorInterface
+
+# Initialize systems
+brain = BrainModule()
+vision = VisionModule()
+motor = MotorInterface(backend="simulation")
+
+# Set artistic goal
+brain.set_goal("Draw an accurate human figure")
+
+# Create and analyze canvas
+motor.create_canvas(800, 600)
+# ... draw initial sketch ...
+motor.save("canvas.png")
+
+# Analyze with vision
+vision_data = vision.analyze("canvas.png")
+
+# Plan corrections
+tasks = brain.plan_next_action(vision_data)
+
+# Execute tasks
+for task in tasks:
+    plan = brain.get_action_plan(task)
+    for action in plan.actions:
+        brain.delegate_to_motor(action, motor)
+    
+    # Evaluate result
+    result = brain.evaluate_result(task, vision_before, vision_after)
+    print(f"Task result: {result.value}")
+
+brain.close()
+vision.close()
+motor.close()
+```
+
 ### Integration with Motor System
 
 ```python
@@ -199,7 +262,7 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 
 - **Motor System**: Executes drawing commands (strokes, tool changes, etc.)
 - **Vision System**: Analyzes canvas state, detects poses, compares to references
-- **Brain System** (Planned): Makes decisions, plans corrections, schedules refinements
+- **Brain System**: Makes decisions, plans corrections, schedules refinements
 - **Style AI** (Planned): Provides style suggestions and reference imagery
 
 ## Design Principles
@@ -227,13 +290,19 @@ Artist/
 │   ├── models/           # Data structures (poses, landmarks, metrics)
 │   ├── utils/            # Utilities (image, geometry, visualization)
 │   └── vision_module.py  # Main API
+├── brain/                 # Brain system (planning & decision-making)
+│   ├── core/             # Core components (planner, task manager, state tracker)
+│   ├── models/           # Data structures (tasks, action plans, state)
+│   └── brain_module.py   # Main API
 ├── tests/
 │   ├── motor/            # Motor system tests (31 tests)
-│   └── vision/           # Vision system tests (32 tests)
+│   ├── vision/           # Vision system tests (32 tests)
+│   └── brain/            # Brain system tests (33 tests)
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
 │   ├── MOTOR_SYSTEM.md
-│   └── VISION_SYSTEM.md
+│   ├── VISION_SYSTEM.md
+│   └── BRAIN_SYSTEM.md
 ├── requirements.txt
 └── setup.py
 ```
