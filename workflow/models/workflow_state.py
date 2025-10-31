@@ -74,15 +74,15 @@ class WorkflowState:
         )
         self.phase_history.append(transition)
         
-        # Update state
-        self.current_phase = new_phase
-        self.phase_start_time = datetime.now()
-        
-        # Reset or increment iteration counter
-        if new_phase == transition.from_phase:
+        # Reset or increment iteration counter (check before updating current_phase)
+        if new_phase == self.current_phase:
             self.iteration_in_phase += 1
         else:
             self.iteration_in_phase = 0
+        
+        # Update state
+        self.current_phase = new_phase
+        self.phase_start_time = datetime.now()
         
         # Reset phase stroke count for new phase
         self.phase_stroke_count = 0

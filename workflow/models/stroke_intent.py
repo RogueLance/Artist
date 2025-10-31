@@ -176,7 +176,7 @@ class StrokeIntentHelper:
         }
         
         # Get intent from task type
-        suggested = task_intent_map.get(task_type.lower())
+        suggested = task_intent_map.get(task_type.lower()) if task_type else None
         
         # Fall back to phase primary intent if suggestion not appropriate
         if suggested and cls.is_intent_appropriate(phase, suggested):
