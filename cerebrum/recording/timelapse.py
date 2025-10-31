@@ -269,7 +269,7 @@ class TimelapseGenerator:
         try:
             font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
             font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 12)
-        except:
+        except (OSError, IOError):
             font = ImageFont.load_default()
             font_small = font
         

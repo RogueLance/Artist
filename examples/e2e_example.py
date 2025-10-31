@@ -115,7 +115,8 @@ def example_photo_pipeline():
     
     # Save recording
     print("\n7. Saving outputs...")
-    output_dir = Path("/tmp/cerebrum_examples/photo_pipeline")
+    import tempfile
+    output_dir = Path(tempfile.gettempdir()) / "cerebrum_examples" / "photo_pipeline"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     recorder.save(output_dir)

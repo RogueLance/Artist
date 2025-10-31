@@ -186,6 +186,9 @@ class BasePipeline(ABC):
             )
             
             # Determine overall success
+            # Note: Stylization stage failures don't affect overall success
+            # as it's an optional aesthetic enhancement that may not always
+            # be applicable or feasible for all input types
             success = all(r.success for r in self._stage_results if r.stage != PipelineStage.STYLIZATION)
             
             return self._create_result(success, errors=errors)

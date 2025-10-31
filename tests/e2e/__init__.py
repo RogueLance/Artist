@@ -150,8 +150,9 @@ class TestE2EFramework:
         assert len(result.stages) > 0
         assert result.final_canvas is not None
         
-        # Check corrections were attempted
-        structure_stage = result.get_stage_result(pipeline.structure_result.stage if hasattr(pipeline, 'structure_result') else None)
+        # Check that structure stage was executed
+        from cerebrum.pipelines.base_pipeline import PipelineStage
+        structure_stage = result.get_stage_result(PipelineStage.STRUCTURE)
     
     def test_ai_pipeline_execution(self):
         """Test complete AI image correction pipeline."""
