@@ -11,9 +11,9 @@ long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
     name="cerebrum-motor",
-    version="0.1.0",
+    version="0.2.0",
     author="Cerebrum Team",
-    description="Motor System - Drawing Control Layer for Cerebrum AI Art Platform",
+    description="Motor and Vision Systems - Drawing Control and Canvas Analysis for Cerebrum AI Art Platform",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/Artist",
@@ -29,7 +29,10 @@ setup(
     ],
     python_requires=">=3.12",
     install_requires=[
-        "Pillow>=10.0.0",
+        "Pillow>=10.2.0",
+        "opencv-python>=4.8.1.78",
+        "mediapipe>=0.10.0",
+        "numpy>=1.24.0",
     ],
     extras_require={
         "dev": [
