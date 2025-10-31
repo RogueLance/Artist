@@ -6,7 +6,7 @@ In production, this would interface with models like SDXL, Kandinsky, etc.
 """
 
 import time
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, List
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter, ImageEnhance
@@ -275,7 +275,7 @@ class ReferenceGenerator:
         self,
         params: GenerationParams,
         style_target: Optional[StyleAnalysis]
-    ) -> list:
+    ) -> List[str]:
         """
         Identify which style elements can be transferred.
         
@@ -355,7 +355,7 @@ class ReferenceGenerator:
         image: Union[str, Path, Image.Image, np.ndarray],
         current_style: Optional[StyleAnalysis] = None,
         n_suggestions: int = 3
-    ) -> list:
+    ) -> List[StyleSuggestion]:
         """
         Generate multiple style suggestions.
         
