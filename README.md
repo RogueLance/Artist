@@ -5,6 +5,7 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 ## Project Status
 
 **Current Milestone**: Artistic Workflow Pipeline (Milestone 5) ✓ Complete
+**Current Milestone**: Imagination System (Milestone 4) ✓ Complete
 
 ### Completed Components
 
@@ -48,6 +49,18 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 
 - 🔄 **Style AI** - Style suggestion and reference (Milestone 4)
 - 🔄 **Full Integration** - Complete end-to-end system (Milestone 6)
+- ✅ **Imagination System** - Style Suggestion Engine (30 tests)
+  - Style feature analysis and tagging
+  - Stylized reference generation
+  - Alternative style suggestions
+  - Transferable element identification
+  - Region-specific style generation
+  - Style comparison metrics
+  - Color palette extraction
+
+### Roadmap
+
+- 🔄 **Integration** - Full system integration (Milestone 5)
 
 ## Motor System
 
@@ -229,6 +242,31 @@ The Workflow System implements a complete artistic workflow pipeline that simula
 - **Decision Logging**: Complete audit trail of all strokes and decisions
 - **Phase Transitions**: Validated transitions with forward progression and regression
 - **Evaluation-Driven**: Automatic phase transition suggestions based on quality metrics
+## Interface System
+
+The Interface System provides a command-line interface for user interaction with the Cerebrum platform, enabling human-in-the-loop guidance and feedback.
+
+### Features
+
+- **Session Management**: Track all activities, inputs, and outputs
+- **User Input Handling**: Submit sketches, references, and artistic goals
+- **Vision Review**: Display and interpret Vision analysis results
+- **Brain Review**: Review and approve/reject Brain task plans
+- **Iteration Control**: Manual step-through or batch execution
+- **Comprehensive Logging**: Track all actions, decisions, and evaluations
+- **Progress Tracking**: Monitor canvas states and improvement scores
+## Imagination System
+
+The Imagination System is the style suggestion engine that explores alternative artistic directions through style analysis and reference generation.
+
+### Features
+
+- **Style Analysis**: Extract line style, contrast, color palette, brushwork, lighting
+- **Reference Generation**: Create stylized variations for inspiration
+- **Alternative Suggestions**: Generate multiple style options to explore
+- **Transferable Elements**: Identify specific elements that can be applied
+- **Region-Specific**: Use masking for localized style exploration
+- **Style Comparison**: Measure similarity between different styles
 
 ### Quick Start
 
@@ -267,6 +305,78 @@ executor.rollback_to_checkpoint(checkpoint_id)
 summary = executor.get_workflow_summary()
 print(f"Total strokes: {summary['total_strokes']}")
 print(f"Current phase: {summary['workflow_state']['current_phase']}")
+from interface import CLIInterface, SessionConfig
+
+# Create configuration
+config = SessionConfig(
+    canvas_width=800,
+    canvas_height=600,
+    max_iterations=10,
+    output_dir=Path("output"),
+    interactive=True
+)
+
+# Initialize interface
+interface = CLIInterface(config)
+
+# Start session
+session_id = interface.start_session()
+
+# Set artistic goal
+interface.set_goal("Draw a stylized female portrait with accurate proportions")
+
+# Submit reference image
+interface.submit_reference("reference.png")
+
+# Run a refinement iteration
+interface.run_iteration()
+
+# Or run multiple iterations in batch
+interface.run_batch_iterations(5, auto_approve=True)
+
+# Display summary
+interface.display_session_summary()
+
+# End session (saves all data and logs)
+interface.end_session()
+```
+
+### Session Data
+
+Each session creates comprehensive records:
+- Session metadata and configuration
+- All user inputs and decisions
+- System actions and execution history
+- Evaluation scores and results
+- Canvas states after each iteration
+- Complete event log for analysis
+
+from imagination import ImaginationModule, GenerationParams
+
+# Initialize imagination module
+imagination = ImaginationModule()
+
+# Analyze current style
+style = imagination.tag_style_elements("canvas.png")
+print(f"Line style: {style.line_style}")
+print(f"Contrast: {style.contrast_level}")
+
+# Generate stylized reference
+params = GenerationParams(
+    strength=0.75,
+    style_prompt="impressionist oil painting"
+)
+suggestion = imagination.generate_stylized_reference("canvas.png", params)
+
+# Examine transferable elements
+print(f"Can transfer: {suggestion.transferable_elements}")
+
+# Get alternative suggestions
+alternatives = imagination.suggest_alternative_style("canvas.png", n_suggestions=3)
+for alt in alternatives:
+    print(f"Try: {alt.name}")
+
+imagination.close()
 ```
 
 ### Integration with Motor System
@@ -299,19 +409,44 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 
 ```
 ┌─────────────────────────────────────────┐
-│              Brain System               │
-│     (Planning & Decision Making)        │
+│         User (CLI Interface)            │
 └─────────────┬───────────────────────────┘
               │
-      ┌───────┴────────┐
-      │                │
-┌─────▼─────┐    ┌────▼──────┐
-│  Vision   │◄───┤   Motor   │
-│  System   │    │  System   │
-│           │    │           │
-│ Canvas    │    │ Drawing   │
-│ Analysis  │    │ Control   │
-└───────────┘    └─────┬─────┘
+    ┌─────────▼─────────┐
+    │  Interface System │
+    │  - Session Mgmt   │
+    │  - User I/O       │
+    │  - Logging        │
+    └──┬─────┬─────┬────┘
+       │     │     │
+   ┌───▼─┐ ┌▼───┐ ┌▼────┐
+   │Brain│ │Vision│Motor│
+   └──┬──┘ └──┬─┘ └─┬───┘
+      │       │     │
+      └───────┼─────┘
+              │
+        ┌─────▼─────┐
+        │   Canvas  │
+        │  (Krita/  │
+        │Simulation)│
+        └───────────┘
+│              Brain System               │
+│     (Planning & Decision Making)        │
+└──────┬────────────────┬─────────────────┘
+       │                │
+       │         ┌──────▼───────┐
+       │         │ Imagination  │
+       │         │   System     │
+       │         │  (Style AI)  │
+       │         └──────┬───────┘
+       │                │
+   ┌───▼────┐    ┌─────▼─────┐
+   │ Vision │◄───┤   Motor   │
+   │ System │    │  System   │
+   │        │    │           │
+   │ Canvas │    │  Drawing  │
+   │Analysis│    │  Control  │
+   └────────┘    └─────┬─────┘
                        │
                 ┌──────▼──────┐
                 │   Canvas    │
@@ -322,10 +457,11 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 
 ### Component Roles
 
+- **Interface System**: Manages user interaction and session tracking
 - **Motor System**: Executes drawing commands (strokes, tool changes, etc.)
 - **Vision System**: Analyzes canvas state, detects poses, compares to references
 - **Brain System**: Makes decisions, plans corrections, schedules refinements
-- **Style AI** (Planned): Provides style suggestions and reference imagery
+- **Imagination System**: Provides style suggestions and reference imagery
 
 ## Design Principles
 
@@ -360,17 +496,31 @@ Artist/
 │   ├── core/             # Core components (executor, checkpoints, logging)
 │   ├── models/           # Data structures (phases, intents, state)
 │   └── __init__.py       # Main API
+├── interface/             # Interface system (user interaction)
+│   ├── models/           # Data structures (session, user input)
+│   ├── utils/            # Utilities (logging, display)
+│   └── cli_interface.py  # CLI implementation
+├── imagination/           # Imagination system (style suggestion)
+│   ├── core/             # Core components (analyzer, generator)
+│   ├── models/           # Data structures (style data, suggestions)
+│   └── imagination_module.py  # Main API
 ├── tests/
 │   ├── motor/            # Motor system tests (31 tests)
 │   ├── vision/           # Vision system tests (32 tests)
 │   ├── brain/            # Brain system tests (33 tests)
 │   └── workflow/         # Workflow system tests (79 tests)
+│   └── interface/        # Interface system tests (30 tests)
+│   └── imagination/      # Imagination system tests (30 tests)
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
 │   ├── MOTOR_SYSTEM.md
 │   ├── VISION_SYSTEM.md
 │   └── BRAIN_SYSTEM.md
 ├── MILESTONE_5_COMPLETE.md  # Workflow pipeline documentation
+│   ├── BRAIN_SYSTEM.md
+│   ├── INTERFACE_SYSTEM.md
+│   └── API_REFERENCE.md
+│   └── IMAGINATION_SYSTEM.md
 ├── requirements.txt
 └── setup.py
 ```
