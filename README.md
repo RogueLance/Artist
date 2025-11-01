@@ -4,7 +4,7 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
 
 ## Project Status
 
-**Current Milestone**: Brain System MVP (Milestone 3) ✓ Complete
+**Current Milestone**: Imagination System (Milestone 4) ✓ Complete
 
 ### Completed Components
 
@@ -35,9 +35,17 @@ Cerebrum is an AI-driven art platform that mimics the iterative creative workflo
   - Iterative refinement workflow
   - State tracking and history
 
+- ✅ **Imagination System** - Style Suggestion Engine (30 tests)
+  - Style feature analysis and tagging
+  - Stylized reference generation
+  - Alternative style suggestions
+  - Transferable element identification
+  - Region-specific style generation
+  - Style comparison metrics
+  - Color palette extraction
+
 ### Roadmap
 
-- 🔄 **Style AI** - Style suggestion and reference (Milestone 4)
 - 🔄 **Integration** - Full system integration (Milestone 5)
 
 ## Motor System
@@ -207,6 +215,50 @@ vision.close()
 motor.close()
 ```
 
+## Imagination System
+
+The Imagination System is the style suggestion engine that explores alternative artistic directions through style analysis and reference generation.
+
+### Features
+
+- **Style Analysis**: Extract line style, contrast, color palette, brushwork, lighting
+- **Reference Generation**: Create stylized variations for inspiration
+- **Alternative Suggestions**: Generate multiple style options to explore
+- **Transferable Elements**: Identify specific elements that can be applied
+- **Region-Specific**: Use masking for localized style exploration
+- **Style Comparison**: Measure similarity between different styles
+
+### Quick Start
+
+```python
+from imagination import ImaginationModule, GenerationParams
+
+# Initialize imagination module
+imagination = ImaginationModule()
+
+# Analyze current style
+style = imagination.tag_style_elements("canvas.png")
+print(f"Line style: {style.line_style}")
+print(f"Contrast: {style.contrast_level}")
+
+# Generate stylized reference
+params = GenerationParams(
+    strength=0.75,
+    style_prompt="impressionist oil painting"
+)
+suggestion = imagination.generate_stylized_reference("canvas.png", params)
+
+# Examine transferable elements
+print(f"Can transfer: {suggestion.transferable_elements}")
+
+# Get alternative suggestions
+alternatives = imagination.suggest_alternative_style("canvas.png", n_suggestions=3)
+for alt in alternatives:
+    print(f"Try: {alt.name}")
+
+imagination.close()
+```
+
 ### Integration with Motor System
 
 ```python
@@ -239,17 +291,21 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 ┌─────────────────────────────────────────┐
 │              Brain System               │
 │     (Planning & Decision Making)        │
-└─────────────┬───────────────────────────┘
-              │
-      ┌───────┴────────┐
-      │                │
-┌─────▼─────┐    ┌────▼──────┐
-│  Vision   │◄───┤   Motor   │
-│  System   │    │  System   │
-│           │    │           │
-│ Canvas    │    │ Drawing   │
-│ Analysis  │    │ Control   │
-└───────────┘    └─────┬─────┘
+└──────┬────────────────┬─────────────────┘
+       │                │
+       │         ┌──────▼───────┐
+       │         │ Imagination  │
+       │         │   System     │
+       │         │  (Style AI)  │
+       │         └──────┬───────┘
+       │                │
+   ┌───▼────┐    ┌─────▼─────┐
+   │ Vision │◄───┤   Motor   │
+   │ System │    │  System   │
+   │        │    │           │
+   │ Canvas │    │  Drawing  │
+   │Analysis│    │  Control  │
+   └────────┘    └─────┬─────┘
                        │
                 ┌──────▼──────┐
                 │   Canvas    │
@@ -263,7 +319,7 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 - **Motor System**: Executes drawing commands (strokes, tool changes, etc.)
 - **Vision System**: Analyzes canvas state, detects poses, compares to references
 - **Brain System**: Makes decisions, plans corrections, schedules refinements
-- **Style AI** (Planned): Provides style suggestions and reference imagery
+- **Imagination System**: Provides style suggestions and reference imagery
 
 ## Design Principles
 
@@ -294,15 +350,21 @@ Artist/
 │   ├── core/             # Core components (planner, task manager, state tracker)
 │   ├── models/           # Data structures (tasks, action plans, state)
 │   └── brain_module.py   # Main API
+├── imagination/           # Imagination system (style suggestion)
+│   ├── core/             # Core components (analyzer, generator)
+│   ├── models/           # Data structures (style data, suggestions)
+│   └── imagination_module.py  # Main API
 ├── tests/
 │   ├── motor/            # Motor system tests (31 tests)
 │   ├── vision/           # Vision system tests (32 tests)
-│   └── brain/            # Brain system tests (33 tests)
+│   ├── brain/            # Brain system tests (33 tests)
+│   └── imagination/      # Imagination system tests (30 tests)
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
 │   ├── MOTOR_SYSTEM.md
 │   ├── VISION_SYSTEM.md
-│   └── BRAIN_SYSTEM.md
+│   ├── BRAIN_SYSTEM.md
+│   └── IMAGINATION_SYSTEM.md
 ├── requirements.txt
 └── setup.py
 ```
