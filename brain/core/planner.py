@@ -6,7 +6,7 @@ Translates vision analysis into actionable drawing plans.
 
 import uuid
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 
 from brain.models.task import Task, TaskType, TaskPriority
 from brain.models.action_plan import ActionPlan, DrawingAction, ActionType
@@ -319,10 +319,15 @@ class Planner:
                 for i in range(self.default_stroke_length)
             ]
         
-        # Generate stroke within target area
-        x = target_area.get("x", 0)
-        y = target_area.get("y", 0)
-        width = target_area.get("width", 100)
+        # Handle both dict and tuple formats for target_area
+        if isinstance(target_area, tuple):
+            # tuple format: (x, y, width, height)
+            x, y, width, height = target_area
+        else:
+            # dict format: {"x": x, "y": y, "width": width, "height": height}
+            x = target_area.get("x", 0)
+            y = target_area.get("y", 0)
+            width = target_area.get("width", 100)
         
         return [
             {"x": x + i * (width / self.default_stroke_length), "y": y + i * 5, "pressure": 0.5}
