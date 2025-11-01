@@ -215,6 +215,19 @@ vision.close()
 motor.close()
 ```
 
+## Interface System
+
+The Interface System provides a command-line interface for user interaction with the Cerebrum platform, enabling human-in-the-loop guidance and feedback.
+
+### Features
+
+- **Session Management**: Track all activities, inputs, and outputs
+- **User Input Handling**: Submit sketches, references, and artistic goals
+- **Vision Review**: Display and interpret Vision analysis results
+- **Brain Review**: Review and approve/reject Brain task plans
+- **Iteration Control**: Manual step-through or batch execution
+- **Comprehensive Logging**: Track all actions, decisions, and evaluations
+- **Progress Tracking**: Monitor canvas states and improvement scores
 ## Imagination System
 
 The Imagination System is the style suggestion engine that explores alternative artistic directions through style analysis and reference generation.
@@ -231,6 +244,52 @@ The Imagination System is the style suggestion engine that explores alternative 
 ### Quick Start
 
 ```python
+from interface import CLIInterface, SessionConfig
+
+# Create configuration
+config = SessionConfig(
+    canvas_width=800,
+    canvas_height=600,
+    max_iterations=10,
+    output_dir=Path("output"),
+    interactive=True
+)
+
+# Initialize interface
+interface = CLIInterface(config)
+
+# Start session
+session_id = interface.start_session()
+
+# Set artistic goal
+interface.set_goal("Draw a stylized female portrait with accurate proportions")
+
+# Submit reference image
+interface.submit_reference("reference.png")
+
+# Run a refinement iteration
+interface.run_iteration()
+
+# Or run multiple iterations in batch
+interface.run_batch_iterations(5, auto_approve=True)
+
+# Display summary
+interface.display_session_summary()
+
+# End session (saves all data and logs)
+interface.end_session()
+```
+
+### Session Data
+
+Each session creates comprehensive records:
+- Session metadata and configuration
+- All user inputs and decisions
+- System actions and execution history
+- Evaluation scores and results
+- Canvas states after each iteration
+- Complete event log for analysis
+
 from imagination import ImaginationModule, GenerationParams
 
 # Initialize imagination module
@@ -289,6 +348,27 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 
 ```
 ┌─────────────────────────────────────────┐
+│         User (CLI Interface)            │
+└─────────────┬───────────────────────────┘
+              │
+    ┌─────────▼─────────┐
+    │  Interface System │
+    │  - Session Mgmt   │
+    │  - User I/O       │
+    │  - Logging        │
+    └──┬─────┬─────┬────┘
+       │     │     │
+   ┌───▼─┐ ┌▼───┐ ┌▼────┐
+   │Brain│ │Vision│Motor│
+   └──┬──┘ └──┬─┘ └─┬───┘
+      │       │     │
+      └───────┼─────┘
+              │
+        ┌─────▼─────┐
+        │   Canvas  │
+        │  (Krita/  │
+        │Simulation)│
+        └───────────┘
 │              Brain System               │
 │     (Planning & Decision Making)        │
 └──────┬────────────────┬─────────────────┘
@@ -316,6 +396,7 @@ Cerebrum follows a modular architecture inspired by human artistic process:
 
 ### Component Roles
 
+- **Interface System**: Manages user interaction and session tracking
 - **Motor System**: Executes drawing commands (strokes, tool changes, etc.)
 - **Vision System**: Analyzes canvas state, detects poses, compares to references
 - **Brain System**: Makes decisions, plans corrections, schedules refinements
@@ -350,6 +431,10 @@ Artist/
 │   ├── core/             # Core components (planner, task manager, state tracker)
 │   ├── models/           # Data structures (tasks, action plans, state)
 │   └── brain_module.py   # Main API
+├── interface/             # Interface system (user interaction)
+│   ├── models/           # Data structures (session, user input)
+│   ├── utils/            # Utilities (logging, display)
+│   └── cli_interface.py  # CLI implementation
 ├── imagination/           # Imagination system (style suggestion)
 │   ├── core/             # Core components (analyzer, generator)
 │   ├── models/           # Data structures (style data, suggestions)
@@ -358,12 +443,15 @@ Artist/
 │   ├── motor/            # Motor system tests (31 tests)
 │   ├── vision/           # Vision system tests (32 tests)
 │   ├── brain/            # Brain system tests (33 tests)
+│   └── interface/        # Interface system tests (30 tests)
 │   └── imagination/      # Imagination system tests (30 tests)
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
 │   ├── MOTOR_SYSTEM.md
 │   ├── VISION_SYSTEM.md
 │   ├── BRAIN_SYSTEM.md
+│   ├── INTERFACE_SYSTEM.md
+│   └── API_REFERENCE.md
 │   └── IMAGINATION_SYSTEM.md
 ├── requirements.txt
 └── setup.py
